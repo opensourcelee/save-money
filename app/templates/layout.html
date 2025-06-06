@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if title %}
+        <title>{{ title }} - Save Money</title>
+    {% else %}
+        <title>Save Money</title>
+    {% endif %}
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
+        header { background-color: #333; color: white; padding: 1rem 0; }
+        nav { max-width: 960px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        nav a.logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        nav a.logo img {
+            height: 30px;
+            margin-right: 8px;
+        }
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; }
+        nav ul li { margin-left: 20px; }
+        nav ul li a { color: white; text-decoration: none; }
+        nav ul li a:hover { text-decoration: underline; }
+        .container { max-width: 960px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        footer { text-align: center; padding: 20px; background-color: #ddd; margin-top: 30px; }
+        .flash-messages { list-style-type: none; padding: 0; margin: 0 0 20px 0; }
+        .flash-messages li { padding: 10px; margin-bottom: 10px; border-radius: 4px; text-align: center; }
+        .flash-messages .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .flash-messages .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .flash-messages .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{{ url_for('main_bp_instance.hello_world_page') }}" class="logo">
+                <img src="{{ url_for('static', filename='images/savemoneylogo.png') }}" alt="Save Money 로고">
+                Save Money
+            </a>
+            <ul>
+                {% if current_user.is_authenticated %}
+                    <li><span>{{ current_user.nickname }}님</span></li>
+                    <li><a href="{{ url_for('main_bp_instance.dashboard') }}">대시보드</a></li>
+                    <li><a href="{{ url_for('auth_bp_instance.logout') }}">로그아웃</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth_bp_instance.login') }}">로그인</a></li>
+                    <li><a href="{{ url_for('auth_bp_instance.signup') }}">회원가입</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    <footer>
+        <p>© {% if current_year %}{{ current_year }}{% else %}2024{% endif %} Save Money App. All rights reserved.</p>
+    </footer>
+</body>
+</html>

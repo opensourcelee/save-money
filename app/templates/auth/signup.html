@@ -1,0 +1,70 @@
+{% extends "layout.html" %} {# layout.html 을 상속받습니다! #}
+
+{% block content %} {# layout.html 의 content 블록을 이 내용으로 채웁니다. #}
+    <div class="container"> <!-- auth 페이지용 container 는 layout.html 의 main.container 와 중복될 수 있으니, 여기서는 제거하거나 다른 클래스명을 사용해도 됩니다. 일단은 유지. -->
+        <h1>회원가입</h1>
+        <!-- Flash 메시지는 이제 layout.html 에서 처리하므로 여기서 제거해도 됩니다. -->
+        <!-- 하지만 페이지별로 다른 위치에 flash 메시지를 두고 싶다면 유지해도 됩니다. -->
+        <!-- 여기서는 layout.html 에 이미 있으므로 중복을 피하기 위해 주석 처리하거나 삭제합니다. -->
+        {#
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        #}
+
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.nickname.label }}
+                {{ form.nickname() }}
+                {% if form.nickname.errors %}
+                    {% for error in form.nickname.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email() }}
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password() }}
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.confirm_password.label }}
+                {{ form.confirm_password() }}
+                {% if form.confirm_password.errors %}
+                    {% for error in form.confirm_password.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class="btn") }}
+            </div>
+        </form>
+        <p class="text-center">이미 계정이 있으신가요? <a href="{{ url_for('auth.login') }}">로그인</a></p>
+    </div>
+{% endblock content %}

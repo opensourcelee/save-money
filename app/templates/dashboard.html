@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>{{ current_user.nickname }}님의 대시보드</h1>
+    <p>Save Money 웹사이트에 오신 것을 환영합니다!</p>
+    <hr>
+
+    <div class="dashboard-summary"> {# 요약 정보 표시 영역 #}
+        <h2>이번 달 현황 ({{ today_date.strftime('%Y-%m') }})</h2> {# 오늘 날짜를 전달받아 현재 월 표시 #}
+        <p><strong>설정된 용돈:</strong> {{ monthly_allowance|round(0)|int }} 원</p>
+        <p><strong>총 지출액:</strong> {{ total_spending_this_month|round(0)|int }} 원</p>
+        <p style="color: {% if remaining_allowance >= 0 %}green{% else %}red{% endif %}; font-weight: bold;">
+            <strong>남은 용돈:</strong> {{ remaining_allowance|round(0)|int }} 원
+        </p>
+        <hr style="margin: 10px 0;">
+        <p><strong>이번 달 남은 일수 (오늘 포함):</strong> {{ remaining_days_this_month }} 일</p>
+        <p><strong>남은 무지출 예정일:</strong> {{ future_no_spending_days_count }} 일</p>
+        <p><strong>실제 돈 쓸 수 있는 남은 날:</strong> {{ spendable_remaining_days }} 일</p>
+        <h3 style="color: blue;">
+            오늘부터 하루 권장 사용액:
+            {% if daily_spend_recommendation > 0 %}
+                {{ daily_spend_recommendation|round(0)|int }} 원
+            {% elif remaining_allowance > 0 and spendable_remaining_days <= 0 %}
+                모든 남은 날을 무지출로 보내셔야 합니다!
+            {% else %}
+                예산을 초과했거나 사용할 날이 없습니다.
+            {% endif %}
+        </h3>
+    </div>
+    <hr>
+
+    <h2>주요 기능</h2>
+    <ul>
+        <li><a href="{{ url_for('allowance_bp_instance.set_allowance') }}">월별 용돈 설정하기</a></li>
+        <li><a href="{{ url_for('spending_bp_instance.add_spending') }}">오늘 지출 입력하기</a></li>
+        <li><a href="{{ url_for('spending_bp_instance.spending_history') }}">지출 내역 보기</a></li>
+        <li><a href="{{ url_for('no_spending_day_bp_instance.toggle_no_spending_day') }}">무지출일 설정하기</a></li>
+    </ul>
+    <hr>
+    <p><a href="{{ url_for('auth_bp_instance.logout') }}">로그아웃</a></p>
+{% endblock content %}

@@ -1,0 +1,73 @@
+{% extends "layout.html" %} {# layout.html 을 상속받습니다! #}
+
+{% block content %} {# layout.html 의 content 블록을 이 내용으로 채웁니다. #}
+    <div class="container">
+        <h1>무지출일 설정</h1>
+        <p>돈을 사용하지 않은 날짜를 기록하고 관리하세요.</p>
+        <hr>
+
+        <div class="row"> {# 폼과 목록을 가로로 배치하기 위한 row (CSS 필요) #}
+            <div class="col-md-5"> {# 폼 영역 #}
+                <h2>새로운 무지출일 설정/해제</h2>
+                <form method="POST" action=""> <!-- action="" 은 현재 URL로 POST 요청을 보냅니다. -->
+                    {{ form.hidden_tag() }} <!-- CSRF 보호용 -->
+
+                    <div class="form-group">
+                        {{ form.date.label }}
+                        {{ form.date(class="form-control") }} {# HTML5 date input #}
+                        {% if form.date.errors %}
+                            {% for error in form.date.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+                <p style="font-size: 0.9em; color: #6c757d;">
+                    이미 설정된 날짜를 다시 선택하고 버튼을 누르면 해제됩니다.
+                </p>
+            </div>
+
+            <div class="col-md-7"> {# 목록 영역 #}
+                <h2>설정된 무지출일 목록</h2>
+                {% if no_spending_days and no_spending_days|length > 0 %}
+                    <ul class="list-group"> {# 목록 스타일 (CSS 필요) #}
+                        {% for nsd_date in no_spending_days %}
+                            <li class="list-group-item">
+                                {{ nsd_date.strftime('%Y년 %m월 %d일') }}
+                                {# 나중에 여기에 각 날짜 옆에 '해제' 버튼을 바로 둘 수도 있습니다. #}
+                                {#
+                                <form method="POST" action="{{ url_for('no_spending_day_bp_instance.toggle_no_spending_day') }}" style="display: inline; margin-left: 10px;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="date_to_toggle" value="{{ nsd_date.strftime('%Y-%m-%d') }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">해제</button>
+                                </form>
+                                #}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>아직 설정된 무지출일이 없습니다.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# 간단한 추가 스타일 (layout.html의 스타일과 함께 사용되거나, 별도 CSS로 이동) #}
+    <style>
+        .row { display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; }
+        .col-md-5, .col-md-7 { position: relative; width: 100%; padding-right: 15px; padding-left: 15px; }
+        @media (min-width: 768px) { /* 화면이 넓을 때 가로 배치 */
+            .col-md-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+            .col-md-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+        }
+        .list-group { display: flex; flex-direction: column; padding-left: 0; margin-bottom: 0; border-radius: 0.25rem; }
+        .list-group-item { position: relative; display: block; padding: 0.75rem 1.25rem; background-color: #fff; border: 1px solid rgba(0, 0, 0, 0.125); }
+        .list-group-item:first-child { border-top-left-radius: inherit; border-top-right-radius: inherit; }
+        .list-group-item:last-child { border-bottom-right-radius: inherit; border-bottom-left-radius: inherit; margin-bottom: 0; border-bottom-width: 1px;}
+        .list-group-item + .list-group-item { border-top-width: 0; }
+    </style>
+{% endblock content %}

@@ -1,0 +1,59 @@
+{% extends "layout.html" %} {# layout.html 을 상속받습니다! #}
+
+{% block content %} {# layout.html 의 content 블록을 이 내용으로 채웁니다. #}
+    <div class="container">
+        <h1>오늘 지출 입력</h1>
+        <p>오늘 사용한 지출 내역을 기록해주세요.</p>
+        <hr>
+
+        <form method="POST" action=""> <!-- action="" 은 현재 URL로 POST 요청을 보냅니다. -->
+            {{ form.hidden_tag() }} <!-- CSRF 보호용 -->
+
+            <div class="form-group">
+                {{ form.date.label }}
+                {{ form.date(class="form-control") }} {# HTML5 date input #}
+                {% if form.date.errors %}
+                    {% for error in form.date.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.category.label }}
+                {{ form.category(class="form-control", placeholder="예: 점심 식사, 커피, 버스 요금") }}
+                {% if form.category.errors %}
+                    {% for error in form.category.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.amount.label }}
+                {{ form.amount(class="form-control", placeholder="예: 7000") }}
+                {% if form.amount.errors %}
+                    {% for error in form.amount.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.description.label }}
+                {{ form.description(class="form-control", rows=3, placeholder="간단한 메모를 남길 수 있습니다 (선택 사항)") }} {# TextArea는 rows 속성으로 높이 조절 가능 #}
+                {% if form.description.errors %}
+                    {% for error in form.description.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+
+        {# 여기에 최근 지출 내역을 몇 개 보여주는 부분을 나중에 추가할 수 있습니다. #}
+    </div>
+{% endblock content %}
